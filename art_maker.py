@@ -1,8 +1,7 @@
 import pygame
 
-
 class Turtle():
-    def __init__(self, pos=(306, 396), size = 15, color = "Red", modifier_x = 1, modifier_y = 1):
+    def __init__(self, color, modifier_x = 1, modifier_y = 1, pos=(306, 396), size = 3,):
         self.pos = pos
         self.size = size
         self.color = color
@@ -12,7 +11,7 @@ class Turtle():
         self.modifier_y = modifier_y
     
     def update(self):
-        #TODO: update position over time
+        #TODO: curves
         self.pos = ((self.pos[0] + self.modifier_x), (self.pos[1] + self.modifier_y))
         self.pos_list.append(self.pos)
         return self.pos_list
@@ -25,24 +24,40 @@ class Turtle():
     
     def draw(self, surface):
         surface.blit(self.surface, self.pos)
-        
-        
+
+class TurtleContainer():
+    def __init__(self, screen):
+        self.colors = ["Red", "Blue", "Green", "Purple"]
+        self.turtles = [Turtle(self.colors[0], 1, 1), 
+                        Turtle(self.colors[1], -1, 1), 
+                        Turtle(self.colors[2], 1, -1), 
+                        Turtle(self.colors[3], -1, -1)]
+        self.lists = [[(0,0)], [(0,0)], [(0,0)], [(0,0)]]
+        self.screen = screen
+    
+    def update(self):
+        self._update_turtles()
+
+    def _update_turtles(self):
+        for idx, turtle in enumerate(self.turtles):
+            self.lists[idx] = turtle.update()
+
+    def draw(self, screen):
+        for turtle in self.turtles:
+            turtle.draw(screen)
+        for idx, list in enumerate(self.lists):
+            pygame.draw.aalines(screen, self.colors[idx], False, list)
+            
+
 
 def main():
     pygame.init()
     pygame.display.set_caption("trA rorriM")
     clock = pygame.time.Clock()
     dt = 0
-    pos_list = []
-    pos_list2 = []
-    pos_list3 = []
-    pos_list4 = []
     resolution = (612, 792) #72dpi 8.5x11 paper sized
     screen = pygame.display.set_mode(resolution)
-    turtle = Turtle((306, 396), 3, "Red", 1, 1)
-    turtle2 = Turtle((306, 396), 3, "Blue", -1, 1)
-    turtle3 = Turtle((306, 396), 3, "Green", 1, -1)
-    turtle4 = Turtle((306, 396), 3, "Purple", -1, -1)
+    turtles = TurtleContainer(screen)
     running = True
     while running:
         # Event Loop
@@ -53,21 +68,11 @@ def main():
                 if event.key == pygame.K_F11:
                     pygame.display.toggle_fullscreen()
         #Game logic
+        turtles.update()
         # Render & Display
         white = pygame.Color(255, 255, 255)
         screen.fill(white)
-        pos_list = turtle.update()
-        pos_list2 = turtle2.update()
-        pos_list3 = turtle3.update()
-        pos_list4 = turtle4.update()
-        turtle.draw(screen)
-        turtle2.draw(screen)
-        turtle3.draw(screen)
-        turtle4.draw(screen)
-        pygame.draw.aalines(screen, "Red", False, pos_list)
-        pygame.draw.aalines(screen, "Blue", False, pos_list2)
-        pygame.draw.aalines(screen, "Green", False, pos_list3)
-        pygame.draw.aalines(screen, "Purple", False, pos_list4)
+        turtles.draw(screen)
         pygame.display.flip()
         dt = clock.tick(30)
     pygame.quit()
