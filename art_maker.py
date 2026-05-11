@@ -48,9 +48,26 @@ class TurtleContainer():
         for idx, list in enumerate(self.lists):
             pygame.draw.aalines(screen, self.colors[idx], False, list)
             
-
+def color_checker(in_color):
+    list = []
+    colors = in_color.replace(",", " ").split()
+    for color in colors:
+        while True:
+            try:
+                valid_color = pygame.Color(color)
+                list.append(valid_color)
+            except ValueError:
+                print(f"Sorry, we couldn't find color: {color}. Please try that color again.")
+                color = input().lower()
+                continue
+            break
+    return list
 
 def main():
+    word = input("What word should we draw?")
+    colors = input("What color(s) would you like?").lower()
+    color_list = color_checker(colors)
+    print(color_list)
     pygame.init()
     pygame.display.set_caption("trA rorriM")
     clock = pygame.time.Clock()
