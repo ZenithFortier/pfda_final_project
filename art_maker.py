@@ -44,12 +44,14 @@ class Turtle():
 
     
     def update(self, angle):
-        #TODO: curves
-        self.pos = ((self.pos[0] + m.cos(m.radians(angle))), (self.pos[1] + m.sin(m.radians(angle))))
-        #if self.mirror_x == True:
-            #self.pos = (((-1) * abs((self.pos[0]))), self.pos[1])
-        #if self.mirror_y == True:
-            #self.pos = (self.pos[0], ((-1) * abs((self.pos[1]))))
+        if self.mirror_x == True and self.mirror_y == False:
+            self.pos = ((self.pos[0] + m.cos(m.radians(-1*angle))), (self.pos[1] + m.sin(m.radians(angle))))
+        elif self.mirror_x == False and self.mirror_y == True:
+            self.pos = ((self.pos[0] + m.cos(m.radians(angle))), (self.pos[1] + m.sin(m.radians(-1*angle))))
+        elif self.mirror_x == True and self.mirror_y == True:
+            self.pos = ((self.pos[0] + m.cos(m.radians(-1*angle))), (self.pos[1] + m.sin(m.radians(-1*angle))))
+        else:
+            self.pos = ((self.pos[0] + m.cos(m.radians(angle))), (self.pos[1] + m.sin(m.radians(angle))))
         self.pos_list.append(self.pos)
         return self.pos_list
 
@@ -77,14 +79,11 @@ class TurtleContainer():
         length = len(self.letters)
         runtime = length * 120
         steps = list(range(120, runtime, 120))
-        print(steps)
         try:
             if gt > steps[counter]:
                 counter += 1
         except IndexError:
             pass
-        print(gt)
-        print(counter)
         self._update_turtles(self.letters[counter])
         return counter
 
