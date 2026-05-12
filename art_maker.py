@@ -147,10 +147,14 @@ def save_image(image, filename):
 
 def main():
     word = input("What word(s) should we draw?").upper().strip()
+    while word == "":
+        word = input("Entered word cannot be blank. Please enter word(s) to be drawn.").upper().strip()
     letters = word_handler(word)
     length = len(letters)
     runtime = length * 60
     colors = input("What color(s) would you like?").lower()
+    while colors == "":
+        colors = input("Entered colors cannot be blank. Please enter color(s) to be drawn.").lower()
     color_list = color_checker(colors)
     pygame.init()
     pygame.display.set_caption("trA rorriM")
