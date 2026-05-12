@@ -42,8 +42,6 @@ class Turtle():
         self.angle = angle
         self.mirror_x = mirror_x
         self.mirror_y = mirror_y
-
-
     
     def update(self, angle):
         if self.mirror_x == True and self.mirror_y == False:
