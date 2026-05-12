@@ -52,6 +52,16 @@ class Turtle():
             self.pos = ((self.pos[0] + (-1*m.cos(m.radians(angle)))), (self.pos[1] + m.sin(m.radians(-1*angle))))
         else:
             self.pos = ((self.pos[0] + m.cos(m.radians(angle))), (self.pos[1] + m.sin(m.radians(angle))))
+        
+        if self.pos[0] > 612:
+            self.pos = (612, self.pos[1])
+        if self.pos[0] < 0:
+            self.pos = (0, self.pos[1])
+        if self.pos[1] > 792:
+            self.pos = (self.pos[0], 792)
+        if self.pos[1] < 0:
+            self.pos = (self.pos[0], 0)
+
         self.pos_list.append(self.pos)
         return self.pos_list
 
@@ -75,10 +85,8 @@ class TurtleContainer():
         self.screen = screen
         self.letters = letters
     
-    def update(self, gt, counter):
-        length = len(self.letters)
-        runtime = length * 120
-        steps = list(range(120, runtime, 120))
+    def update(self, gt, runtime, counter):
+        steps = list(range(60, runtime, 60))
         try:
             if gt > steps[counter]:
                 counter += 1
@@ -132,6 +140,8 @@ def word_handler(word):
 def main():
     word = input("What word(s) should we draw?").upper().strip()
     letters = word_handler(word)
+    length = len(letters)
+    runtime = length * 60
     colors = input("What color(s) would you like?").lower()
     color_list = color_checker(colors)
     pygame.init()
@@ -153,14 +163,18 @@ def main():
                 if event.key == pygame.K_F11:
                     pygame.display.toggle_fullscreen()
         #Game logic
-        counter = turtles.update(gt, counter)
-        gt += 1
+        if gt > runtime:
+            print("Artwork Finished.")
+            running = False
+        else:
+            counter = turtles.update(gt, runtime, counter)
+            gt += 1
         # Render & Display
         white = pygame.Color(255, 255, 255)
         screen.fill(white)
         turtles.draw(screen)
         pygame.display.flip()
-        dt = clock.tick(30)
+        dt = clock.tick(60)
     pygame.quit()
 
 
