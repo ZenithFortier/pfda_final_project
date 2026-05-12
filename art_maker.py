@@ -45,11 +45,11 @@ class Turtle():
     
     def update(self, angle):
         if self.mirror_x == True and self.mirror_y == False:
-            self.pos = ((self.pos[0] + m.cos(m.radians(-1*angle))), (self.pos[1] + m.sin(m.radians(angle))))
+            self.pos = ((self.pos[0] + (-1*m.cos(m.radians(angle)))), (self.pos[1] + m.sin(m.radians(angle))))
         elif self.mirror_x == False and self.mirror_y == True:
             self.pos = ((self.pos[0] + m.cos(m.radians(angle))), (self.pos[1] + m.sin(m.radians(-1*angle))))
         elif self.mirror_x == True and self.mirror_y == True:
-            self.pos = ((self.pos[0] + m.cos(m.radians(-1*angle))), (self.pos[1] + m.sin(m.radians(-1*angle))))
+            self.pos = ((self.pos[0] + (-1*m.cos(m.radians(angle)))), (self.pos[1] + m.sin(m.radians(-1*angle))))
         else:
             self.pos = ((self.pos[0] + m.cos(m.radians(angle))), (self.pos[1] + m.sin(m.radians(angle))))
         self.pos_list.append(self.pos)
