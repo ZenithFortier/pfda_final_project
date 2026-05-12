@@ -2,7 +2,8 @@
 ## Zenith Fortier - PFDA Final Project
 
 **Repository Url** - https://github.com/ZenithFortier/pfda_final_project
-**Video Presentation Url** - 
+
+**Video Presentation Url** - https://youtu.be/w8VydgDdkS8
 
 ### Summary
 The user inputs some text and a list of colors into the console, and the program begins drawing a work of art that is mirrored across both the x-axis and y-axis. The lines are drawn live over time, changing direction based on each letter of the user input. Once all letters have been drawn, the program exports the final image as a .png file and closes.
