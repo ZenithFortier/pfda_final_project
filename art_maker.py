@@ -1,5 +1,7 @@
 import pygame
 import math as m
+import os
+from PIL import Image
 
 dictionary = {
     "A": 13,
@@ -136,6 +138,14 @@ def word_handler(word):
             list.append(dictionary[letter])
     return list
 
+def save_image(image, filename):
+    copy_num = 1
+    path = filename
+    name, ext = os.path.splitext(filename)
+    while os.path.exists(path):
+        path = f"{name}({copy_num}){ext}"
+        copy_num += 1
+    image.save(path)
 
 def main():
     word = input("What word(s) should we draw?").upper().strip()
@@ -164,7 +174,11 @@ def main():
                     pygame.display.toggle_fullscreen()
         #Game logic
         if gt > runtime:
-            print("Artwork Finished.")
+            print("Artwork Finished. Saving file.")
+            img_string = pygame.image.tobytes(screen, "RGB")
+            image = Image.frombytes("RGB", resolution, img_string)
+            name = f"{word.lower():.15}.png"
+            save_image(image, name)
             running = False
         else:
             counter = turtles.update(gt, runtime, counter)
