@@ -30,21 +30,26 @@ dictionary = {
     "Z": 338,
 }
 
-
-
 class Turtle():
-    def __init__(self, color, modifier_x = 1, modifier_y = 1, pos=(306, 396), size = 3,):
+    def __init__(self, color, angle, mirror_x=False, mirror_y=False, pos=(306, 396), size = 3,):
         self.pos = pos
         self.size = size
         self.color = color
         self.pos_list = [pos]
         self.surface = self.update_surface()
-        self.modifier_x = modifier_x
-        self.modifier_y = modifier_y
+        self.angle = angle
+        self.mirror_x = mirror_x
+        self.mirror_y = mirror_y
+
+
     
-    def update(self):
+    def update(self, angle):
         #TODO: curves
-        self.pos = ((self.pos[0] + self.modifier_x), (self.pos[1] + self.modifier_y))
+        self.pos = ((self.pos[0] + m.cos(m.radians(angle))), (self.pos[1] + m.sin(m.radians(angle))))
+        #if self.mirror_x == True:
+            #self.pos = (((-1) * abs((self.pos[0]))), self.pos[1])
+        #if self.mirror_y == True:
+            #self.pos = (self.pos[0], ((-1) * abs((self.pos[1]))))
         self.pos_list.append(self.pos)
         return self.pos_list
 
@@ -58,27 +63,41 @@ class Turtle():
         surface.blit(self.surface, self.pos)
 
 class TurtleContainer():
-    def __init__(self, screen, colors):
+    def __init__(self, screen, colors, letters):
         self.colors = colors
-        self.turtles = [Turtle(self.colors[0], 1, 1), 
-                        Turtle(self.colors[1], -1, 1), 
-                        Turtle(self.colors[2], 1, -1), 
-                        Turtle(self.colors[3], -1, -1)]
+        self.turtles = [Turtle(self.colors[0], letters[0]), 
+                        Turtle(self.colors[1], letters[0], mirror_x=True), 
+                        Turtle(self.colors[2], letters[0], mirror_y=True), 
+                        Turtle(self.colors[3], letters[0], mirror_x=True, mirror_y=True)]
         self.lists = [[(0,0)], [(0,0)], [(0,0)], [(0,0)]]
         self.screen = screen
+        self.letters = letters
     
-    def update(self):
-        self._update_turtles()
+    def update(self, gt, counter):
+        length = len(self.letters)
+        runtime = length * 120
+        steps = list(range(120, runtime, 120))
+        print(steps)
+        try:
+            if gt > steps[counter]:
+                counter += 1
+        except IndexError:
+            pass
+        print(gt)
+        print(counter)
+        self._update_turtles(self.letters[counter])
+        return counter
 
-    def _update_turtles(self):
+    def _update_turtles(self, angle):
         for idx, turtle in enumerate(self.turtles):
-            self.lists[idx] = turtle.update()
+            self.lists[idx] = turtle.update(angle)
 
     def draw(self, screen):
         for turtle in self.turtles:
             turtle.draw(screen)
         for idx, list in enumerate(self.lists):
             pygame.draw.aalines(screen, self.colors[idx], False, list)
+
             
 def color_checker(in_color):
     list = []
@@ -103,17 +122,28 @@ def color_checker(in_color):
         list = list[:4]
     return list
 
+def word_handler(word):
+    list = []
+    for letter in word:
+        if letter in dictionary:
+            list.append(dictionary[letter])
+    return list
+
+
 def main():
-    word = input("What word should we draw?")
+    word = input("What word(s) should we draw?").upper().strip()
+    letters = word_handler(word)
     colors = input("What color(s) would you like?").lower()
     color_list = color_checker(colors)
     pygame.init()
     pygame.display.set_caption("trA rorriM")
     clock = pygame.time.Clock()
     dt = 0
+    gt = 0
+    counter = 0
     resolution = (612, 792) #72dpi 8.5x11 paper sized
     screen = pygame.display.set_mode(resolution)
-    turtles = TurtleContainer(screen, color_list)
+    turtles = TurtleContainer(screen, color_list, letters)
     running = True
     while running:
         # Event Loop
@@ -124,7 +154,8 @@ def main():
                 if event.key == pygame.K_F11:
                     pygame.display.toggle_fullscreen()
         #Game logic
-        turtles.update()
+        counter = turtles.update(gt, counter)
+        gt += 1
         # Render & Display
         white = pygame.Color(255, 255, 255)
         screen.fill(white)
