@@ -1,4 +1,36 @@
 import pygame
+import math as m
+
+dictionary = {
+    "A": 13,
+    "B": 26,
+    "C": 39,
+    "D": 52,
+    "E": 65,
+    "F": 78,
+    "G": 91,
+    "H": 104,
+    "I": 117,
+    "J": 130,
+    "K": 143,
+    "L": 156,
+    "M": 169,
+    "N": 182,
+    "O": 195,
+    "P": 208,
+    "Q": 221,
+    "R": 234,
+    "S": 247,
+    "T": 260,
+    "U": 273,
+    "V": 286,
+    "W": 299,
+    "X": 312,
+    "Y": 325,
+    "Z": 338,
+}
+
+
 
 class Turtle():
     def __init__(self, color, modifier_x = 1, modifier_y = 1, pos=(306, 396), size = 3,):
@@ -26,8 +58,8 @@ class Turtle():
         surface.blit(self.surface, self.pos)
 
 class TurtleContainer():
-    def __init__(self, screen):
-        self.colors = ["Red", "Blue", "Green", "Purple"]
+    def __init__(self, screen, colors):
+        self.colors = colors
         self.turtles = [Turtle(self.colors[0], 1, 1), 
                         Turtle(self.colors[1], -1, 1), 
                         Turtle(self.colors[2], 1, -1), 
@@ -61,20 +93,27 @@ def color_checker(in_color):
                 color = input().lower()
                 continue
             break
+    if len(list) > 4:
+        list = list[:4]
+    elif len(list) < 4:
+        list.append(list[0])
+        list.append(list[1])
+        list.append(list[2])
+        list.append(list[3])
+        list = list[:4]
     return list
 
 def main():
     word = input("What word should we draw?")
     colors = input("What color(s) would you like?").lower()
     color_list = color_checker(colors)
-    print(color_list)
     pygame.init()
     pygame.display.set_caption("trA rorriM")
     clock = pygame.time.Clock()
     dt = 0
     resolution = (612, 792) #72dpi 8.5x11 paper sized
     screen = pygame.display.set_mode(resolution)
-    turtles = TurtleContainer(screen)
+    turtles = TurtleContainer(screen, color_list)
     running = True
     while running:
         # Event Loop
